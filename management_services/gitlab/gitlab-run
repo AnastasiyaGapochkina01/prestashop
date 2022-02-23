@@ -1,0 +1,1 @@
+docker run --detach   --network host   --name gitlab   --restart always   --shm-size 256m   gitlab/gitlab-ce:latest

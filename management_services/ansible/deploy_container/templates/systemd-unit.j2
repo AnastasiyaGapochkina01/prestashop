@@ -1,0 +1,22 @@
+[Unit]
+Description={{ container_name }}
+Requires=docker.service
+After=docker.service
+
+[Service]
+EnvironmentFile=/etc/container_envs/{{ container_name }}.env
+TimeoutSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker rm -f {{ container_name }}
+ExecStart=/bin/bash -c 'echo "Starting {{ container_name }} container"; \
+exec /usr/bin/docker run -t --name="{{ container_name }}" \
+--env-file /etc/container_envs/{{ container_name }}.env \
+--network host \
+{% if volumes is defined %}{% if volumes is string %}-v '{{ volumes }}' \
+{% endif %}{% endif %}
+{{ image }}'
+ExecStop=-/usr/bin/docker stop --time 5 {{ container_name }}
+ExecStop=-/usr/bin/docker rm {{ container_name }}
+
+[Install]
+WantedBy=multi-user.target

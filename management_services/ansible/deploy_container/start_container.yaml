@@ -1,0 +1,9 @@
+---
+- hosts: "{{ hosts }}"
+  become: true
+
+  tasks:
+    - name: Start container
+      systemd:
+        name: docker-{{ container_name }}.service
+        state: started

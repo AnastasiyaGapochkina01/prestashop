@@ -1,0 +1,27 @@
+pipeline{
+    environment {
+        gitlab_project = 'http://192.168.56.12/root/management_services'
+    }
+    agent any
+    parameters{
+        choice(name: 'container', choices: ['php-fpm', 'nginx', 'mysql'])
+        string(name: 'docker_image', description: '')
+        choice(name: 'host', choices: ['prod', 'staging'], description: 'deploy on prod or on staging')
+    }
+     stages{
+        stage('Pull image'){
+            steps{
+                script{
+                    git([url: "$gitlab_project", branch: "main", credentialsId: 'b33c6bb5-6259-4652-a025-c93e2ed9def5'])
+                    dir("management_services/ansible/deploy_container"){
+                        ansiblePlaybook([
+                            playbook: 'pull_image.yaml', 
+                            inventory: 'inventory', 
+                            extraVars: [hosts:"${params.host}", image:"${params.docker_image}"]
+                            ])
+                    }
+                }
+            }
+        }
+    }
+}

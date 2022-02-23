@@ -1,0 +1,8 @@
+---
+- hosts: "{{ hosts }}"
+  become: true
+
+  tasks:
+    - name: Daemon reload
+      systemd:
+        daemon_reload: yes

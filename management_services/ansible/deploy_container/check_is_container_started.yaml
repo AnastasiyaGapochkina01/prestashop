@@ -1,0 +1,7 @@
+---
+- hosts: "{{ hosts }}"
+  become: true
+
+  tasks:
+    - name: Check is container really started
+      command: systemctl is-active "docker-{{ container_name }}"

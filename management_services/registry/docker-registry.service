@@ -1,0 +1,21 @@
+[Unit]
+Description=Registry to local projecst
+Requires=docker.service
+After=docker.service
+
+[Service]
+EnvironmentFile=/etc/container_envs/registry.env
+TimeoutSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker rm -f local_registry
+ExecStart=/bin/bash -c 'echo "Starting registry container"; \
+exec /usr/bin/docker run -t --name="local_registry" \
+--env-file /etc/container_envs/registry.env \
+--network host \
+-v '/opt/registry:/var/lib/registry' \
+registry:2'
+ExecStop=-/usr/bin/docker stop --time 5 local_registry
+ExecStop=-/usr/bin/docker rm local_registry
+
+[Install]
+WantedBy=multi-user.target
