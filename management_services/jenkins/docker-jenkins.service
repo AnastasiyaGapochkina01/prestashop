@@ -12,7 +12,6 @@ ExecStart=/bin/bash -c 'echo "Starting jenkins container"; \
 exec /usr/bin/docker run -t --name="jenkins" \
 --network host \
 -u 0 \
--p '8080:8080' \
 -v /var/run/docker.sock:/var/run/docker.sock \
 -v $(which docker):$(which docker) \
 --privileged \
